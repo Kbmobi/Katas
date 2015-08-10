@@ -1,41 +1,51 @@
 #[2015-08-03] Challenge #226 [Easy] Adding fractions
 #https://www.reddit.com/r/dailyprogrammer/comments/3fmke1/20150803_challenge_226_easy_adding_fractions/
 #Solution by: Keegan Bailey
-                    
-def add(fraction1, fraction2):
-    if fraction1 == "":
-        return fraction2
-    
-    top1 = int(fraction1.split("/")[0])
-    bot1 = int(fraction1.split("/")[1])
-    
-    top2 = int(fraction2.split("/")[0])
-    bot2 = int(fraction2.split("/")[1])
-    
-    top3 = top1 * bot2
-    bot3 = bot1 * bot2 
-    top4 = top2 * bot1 
-    bot4 = bot2 * bot1
 
-    total = str(top3 + top4) + "/" + str(bot3)
-    
-    return total
+def gcd(a, b):
+    if a < b:
+        a, b = b, a
+    if b == 0:
+        return a
+    return gcd(b, a%b)
 
-def reduceToLowest(inStr):
-    #TODO: Reduce fraction to lowest terms
-    return
+def numerator(n):
+    return n.split("/")[0]
+
+def denominator(d):
+    return d.split("/")[1]
+
+def removeReduce(n, d):
+    while (n > d):
+        n -= d
+    return n/gcd(n, d), d/gcd(n, d)
+    
+def add(frac1, frac2):
+    if frac1 == "":
+        return frac2
+    
+    n1 = int(numerator(frac1)) * int(denominator(frac2))
+    d1 = int(denominator(frac1)) * int(denominator(frac2))
+    n2 = int(numerator(frac2)) * int(denominator(frac1))
+    d2 = int(denominator(frac2)) * int(denominator(frac1))
+
+    if(d1 != d2):
+        print "error: denominators %n and %n do not match" % (d1, d2)
+        return
+        
+    n,d = removeReduce(n1+n2, d1)
+    
+    return str(n) + "/" + str(d)
+
 
 if __name__ == "__main__":
-    input1 = "2 1/6 3/10".split()
+    challenge = "10 1/7 35/192 61/124 90/31 5/168 31/51 69/179 32/5 15/188 10/17".split()
     total = ""
-    top1 = 0
-    bot1 = 0
-    for i in input1:
-        
+    
+    for i in challenge:    
         fraction = i
         if "/" not in i:
             total = add(total, i + "/1")
         else:
-            print string(i)
             total = add(total, i)
-    
+    print total
