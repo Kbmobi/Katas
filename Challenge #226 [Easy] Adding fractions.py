@@ -15,9 +15,7 @@ def numerator(n):
 def denominator(d):
     return d.split("/")[1]
 
-def removeReduce(n, d):
-    while (n > d):
-        n -= d
+def reduceFraction(n, d):
     return n/gcd(n, d), d/gcd(n, d)
     
 def add(frac1, frac2):
@@ -33,7 +31,7 @@ def add(frac1, frac2):
         print "error: denominators %n and %n do not match" % (d1, d2)
         return
         
-    n,d = removeReduce(n1+n2, d1)
+    n,d = reduceFraction(n1+n2, d1)
     
     return str(n) + "/" + str(d)
 
@@ -41,7 +39,7 @@ def run(x):
     total = ""
     for i in x:   
         if "/" not in i:
-            total = add(total, i + "/1")
+            continue
         else:
             total = add(total, i)
     print total
