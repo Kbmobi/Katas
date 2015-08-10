@@ -37,15 +37,23 @@ def add(frac1, frac2):
     
     return str(n) + "/" + str(d)
 
-
-if __name__ == "__main__":
-    challenge = "10 1/7 35/192 61/124 90/31 5/168 31/51 69/179 32/5 15/188 10/17".split()
+def run(x):
     total = ""
-    
-    for i in challenge:    
-        fraction = i
+    for i in x:   
         if "/" not in i:
             total = add(total, i + "/1")
         else:
             total = add(total, i)
     print total
+
+if __name__ == "__main__":
+    input1 = "2 1/6 3/10".split()
+    input2 = "3 1/3 1/4 1/12".split()
+    challenge1 = "5 2/9 4/35 7/34 1/2 16/33".split()
+    challenge2 = "10 1/7 35/192 61/124 90/31 5/168 31/51 69/179 32/5 15/188 10/17".split()
+
+    run(input1)
+    run(input2)
+    run(challenge1)
+    run(challenge2)
+   
