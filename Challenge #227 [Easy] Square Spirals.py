@@ -1,5 +1,12 @@
+#Challenge #227 [Easy] Square Spirals
+#https://www.reddit.com/r/dailyprogrammer/comments/3ggli3/20150810_challenge_227_easy_square_spirals/
+#Solution by Keegan Bailey
+
 def spiral(n):
-    x, y, dx, dy = 0, 0, 0, -1
+    x = 0
+    y = 0
+    dx = 0
+    dy = -1
 
     for i in range(n**2):
         if abs(x) == abs(y) and [dx,dy] != [1,0] or x>0 and y == 1-x:  
@@ -8,38 +15,73 @@ def spiral(n):
         x, y = x+dx, y+dy
 
 def makeGrid(n):
-    matrix = [[0 for x in range(n)] for x in range(n)]
+    matrix = [[0 for g in range(n)] for g in range(n)]
 
-    a = 0
-    while a < n:
-        b = 0
-        for d in matrix[a]:
-            matrix[a][b] = (a+1, b+1) 
-            b += 1
-        a += 1
+    y = 0
+    while y < n:
+        x = 0
+        for d in matrix[y]:
+            matrix[y][x] = (x+1, y+1) 
+            x += 1
+        y += 1
 
     return matrix
 
+def getArrayPoint(m, x, y):
+    middle = len(m)/2
+    rx = middle + x
+    ry = middle + -y
+    return m[ry][rx]     
+
+def getByNumber(m, s, n):
+    return getArrayPoint(m,s[n-1][0],s[n-1][1])
+    
+
+def getByQuard(m, s, x, y):
+    count = 1
+    for i in s:
+        point = getArrayPoint(m, i[0], i[1])
+        if point[0] == x and point[1] == y:
+            return count
+        count += 1
+
+def run(ui):
+    if len(ui) <= 0:
+        return
+    
+    m = makeGrid(int(ui[0]))
+    s = list(spiral(int(ui[0])))
+    
+    if len(ui) == 3:
+        return getByQuard(m, s, int(ui[1]), int(ui[2]))
+    else:
+        return getByNumber(m, s, int(ui[1]))
+        
         
 if __name__ == "__main__":
-    input1 = "3 8".split()
+    ex1 = "3 8".split()
+    ex2 = "7 1 1".split()
+    ex3 = "11 50".split()
+    ex4 = "9 6 8".split()
+    # Memory Error
+    #ex5 = "1024716039 557614022".split()
+    #ex6 = "234653477 11777272 289722".split()
 
-    magic = int(input1[0])
-    m = makeGrid(int(input1[0]))
-    x = list(spiral(int(input1[0])))
-
-    for i in x:
-        print m[i[0]+(magic/2)][i[1]+(magic/2)]
-
-
+    print run(ex1)
+    print run(ex2)
+    print run(ex3)
+    print run(ex4)
+    #print run(ex5)
+    #print run(ex6)
 
 '''
 
-3
-8
-output:(2,3)
-
-7
-1 1
+Expected Output:
+(2,3)
+37
+(10, 9)
+47
+(512353188, 512346213)
+54790653381545607
 
 '''
