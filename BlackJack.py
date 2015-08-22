@@ -1,3 +1,5 @@
+# Single Deck Blackjack Simulator :: By Keegan Bailey
+# The simulator will folow basic stratagy for player (excluding splits), dealer stands on soft 17
 import random
 
 stack = []
@@ -26,27 +28,88 @@ def evaluate(hand):
     total = 0
     
     for i in hand:
-        if "10" or "J" or "Q" or "K" in i:
+        if "10" in i:
             total += 10
-        if "A" in i:
+        elif "J" in i:
+            total += 10
+        elif "Q" in i:
+            total += 10
+        elif "K" in i:
+            total += 10
+        elif "A" in i:
             total += 1
             ace = True
         else:
             total +=  int(i[:-1])
-
+    
     if total < 12 and ace == True:
         return total+10
     else:
         return total
 
 def clear():
-    playerHand = []
-    dealerHand = []
+    del playerHand[:]
+    del dealerHand[:]
 
-def setupGame():
-    deck()
+def deal():
+    draw(playerHand)
+    draw(dealerHand)
+    draw(playerHand)
+    draw(dealerHand)
+    gameover = playerGame()
+    if gameover == False:
+        dealerGame()
+    end()
+
+def end():
+    dealer = evaluate(dealerHand)
+    player = evaluate(playerHand)
+    print "DealerHand: %s -- Total:%s" % (dealerHand, str(dealer))
+    print "PlayerHand: %s -- Total:%s" % (playerHand, str(player))
+
+    if player == dealer:
+        print "Push"
+    elif player < 22 and player > dealer or dealer > 21:
+        print "Player wins"
+    else:
+        print "House wins"
+    print "----------------------------"
+    
+    clear()
+
+def dealerGame():
+    while evaluate(dealerHand) < 17:
+        draw(dealerHand)
+
+def playerGame():
+    #player goes before dealer. dealer will only play if player does not bust. dealer will not play again a blackjack unless they have an ace
+    dealer = evaluate(dealerHand[:-1])
+    if evaluate(playerHand) == 21:
+        if dealer == 11:
+            return False
+        return True
+    
+
+    while evaluate(playerHand) < 12:
+        draw(playerHand)
+
+    if dealer < 7:
+        return False
+    else: #dealer > 6
+        while evaluate(playerHand) < 17:
+            draw(playerHand)
+
+    if evaluate(playerHand) > 21:
+        return True
+    
+    return False
 
 if __name__ == '__main__':
-    setupGame()
+    x = input("How many hands do you want to simulate?: ")
+    i = 0
+    while i < x:
+        print "Game #%d" % (i + 1)
+        deal()
+        i += 1
 
     
