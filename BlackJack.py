@@ -1,7 +1,10 @@
 # Single Deck Blackjack Simulator :: By Keegan Bailey
-# The simulator will folow basic stratagy for player (excluding splits), dealer stands on soft 17
+# The simulator will follow basic stratagy for player (excluding splits), dealer stands on soft 17
 import random
 
+playerWon = 0
+houseWon = 0
+push = 0
 stack = []
 playerHand = []
 dealerHand = []
@@ -62,16 +65,22 @@ def deal():
     end()
 
 def end():
+    global playerWon
+    global houseWon
+    global push
     dealer = evaluate(dealerHand)
     player = evaluate(playerHand)
     print "DealerHand: %s -- Total:%s" % (dealerHand, str(dealer))
     print "PlayerHand: %s -- Total:%s" % (playerHand, str(player))
 
     if player == dealer:
+        push += 1
         print "Push"
     elif player < 22 and player > dealer or dealer > 21:
+        playerWon += 1
         print "Player wins"
     else:
+        houseWon += 1
         print "House wins"
     print "----------------------------"
     
@@ -89,7 +98,6 @@ def playerGame():
             return False
         return True
     
-
     while evaluate(playerHand) < 12:
         draw(playerHand)
 
@@ -106,10 +114,11 @@ def playerGame():
 
 if __name__ == '__main__':
     x = input("How many hands do you want to simulate?: ")
+
     i = 0
     while i < x:
         print "Game #%d" % (i + 1)
         deal()
         i += 1
 
-    
+    print "Total:  Hands: %d \nPlayer: %d - House: %d - Push %d"  % (i, playerWon, houseWon, push)    
