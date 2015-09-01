@@ -3,22 +3,27 @@ Slot Machine Simulator by Keegan Bailey
 10 spins,
 6 symbols,
 5 pay lines,
+Has Credits,
+Raise/lower bets,
+Paytable
 ---
-TODO: add Wilds, add Credits,
+TODO: add Wilds
 '''
 
 import random
-import math
 
 reel = []
 game = []
 symbols = ["J","Q","K","A","7","$"]
+creds = 10000
+bet = 100
 
 def spin():
-    '''Sets up a 3x5 grid for the symbols
-'''
     global game
-    game = [[None for x in range(5)] for x in range(3)]
+    global creds
+
+    creds = creds - bet
+    game = [["X" for x in range(5)] for x in range(3)]
     
     for x in range(3):
         for y in range(5):
@@ -27,16 +32,67 @@ def spin():
 def printGame():
     for i in game:
         print i
+    print "Credits: %d    Bet: %d" % (creds, bet)
+        
+def printPayTable():
+    print "Pay Table: Per Credit Bet!"
+    print "JJJ   = 10   QQQ   = 20    KKK   = 30"
+    print "JJJJ  = 100  QQQQ  = 200   KKKK  = 300"
+    print "JJJJJ = 1000 QQQQQ = 2000  KKKKK = 3000"
+    print "AAA   = 50   777   = 100   $$$   = 1000"
+    print "AAAA  = 500  7777  = 1000  $$$$  = 10000"
+    print "AAAAA = 5000 77777 = 50000 $$$$$ = 100000"
+    print "-----------------------------------------"
+    raw_input("Press enter to continue.")
+    printIntro()
 
-def printPayout(line, symb, count):
-    ln = line+1
-    print "Line: %d %s(%d) pays!!" % (ln, symb, count)
+def printIntro():
+    print "Welcome to Python Slots!"
+    print "['7', '7', '7', '7', '7']"
+    print "['$', '7', '7', '7', '$']"
+    print "['$', '$', '7', '$', '$']"
+    print "Credits: %d    Bet: %d" % (creds, bet)
 
+def printPay(pay, c, s):
+    print "Won %d!! %dx %s's" % (pay, c, s)
+
+def raiseBet():
+    global bet
+    if bet + 100 <= creds:
+        bet = bet + 100
+    printIntro()
+
+def lowerBet():
+    global bet
+    if bet - 100 >= 0:
+        bet = bet - 100
+    printIntro()
+
+def getPayout(s, c):
+    if s == "J":
+            pay = bet * (10 ** (c-2))
+    elif s == "Q":
+            pay = bet * (20 ** (c-2))
+    elif s == "K":
+            pay = bet * (30 ** (c-2))
+    elif s == "A":
+            pay = bet * (50 ** (c-2))
+    elif s == "7":
+            pay = bet * (100 ** (c-2))
+    elif s == "$":
+            pay = bet * (1000 ** (c-2))
+    printPay(pay, c, s)
+    adjustCredits(pay)
+
+def adjustCredits(p):
+    global creds
+    creds = creds + p
+    
 def payout():
     for i in range(5):
         symb, count = checkLine(i)
-        if count > 1:
-            printPayout(i, symb, count)
+    if count > 2:
+        getPayout(symb, count)
 
 def checkLine(lineNum):
     y = [0,1,2,3,4]
@@ -78,8 +134,7 @@ def checkSymbol(x, y):
 def getReel():
     '''Sets up probabilty of getting symbols:
        8x J's   7x Q's   6x K's
-       5x A's   4x 7's   2x $'s
-'''
+       5x A's   4x 7's   2x $'s'''
     for i in range(32):
         if i < 8:
             reel.append("J")
@@ -93,18 +148,45 @@ def getReel():
             reel.append("7")
         else:
             reel.append("$")
-    return reel
-
+    
+def setup():
+    getReel()
+    printIntro()
+    
 def runGame():
     spin()
-    printGame()
     payout()
+    printGame()
+
+def getInput():
+    x = None
+    while 1:
+        if x == "P":
+            printPayTable()
+            x = None
+        elif x == "U":
+            raiseBet()
+            x = None
+        elif x == "L":
+            lowerBet()
+            x = None
+        elif x == "S":
+            print "------------------"
+            runGame()
+            x = None
+        elif x == "Q":
+            print "Thanks for playing!"
+            return
+        elif x == "M":
+            for x in range(int(raw_input("How Many Spins?: "))):
+                print "------------------"
+                runGame()
+            x = None
+        else:
+            x = raw_input("Quit:(Q)|PayTable:(P)\nRaiseBet:(U)|LowerBet(L)|Spin(S)\nMultiSpin:(M) : ")
+        
 
 if __name__ == "__main__":
-    print "Welcome to the Test Slot Machine"
-    getReel()
-
-    for i in range(10):
-        runGame()
-        print "----------"
+    setup()
+    getInput()
     
