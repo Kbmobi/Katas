@@ -122,3 +122,4 @@ if __name__ == '__main__':
         i += 1
 
     print "Total:  Hands: %d \nPlayer: %d - House: %d - Push %d"  % (i, playerWon, houseWon, push)    
+
